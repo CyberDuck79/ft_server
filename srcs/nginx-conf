@@ -1,0 +1,23 @@
+server {
+	listen 80;
+	listen [::]:80 ipv6only=on;
+	listen 443 ssl;
+	listen [::]:443 ipv6only=on ssl;
+
+	ssl_certificate /root/localhost.pem;
+	ssl_certificate_key /root/localhost-key.pem;
+
+	server_name localhost www.localhost;
+	index index.html index.php;
+	root /var/www/localhost;
+
+	location / {
+		try_files $uri $uri/ =404;  # if uri or uri/ not valid, 404 error
+	}
+
+	# php files
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+	}
+}
